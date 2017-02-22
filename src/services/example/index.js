@@ -1,19 +1,16 @@
-'use strict';
+const hooks = require('./hooks');
+const cdnMarkets = require('cdnmarkets');
+const createService = require('../creator');
 
-const r = require('../db');
-const Service = require('feathers-rethinkdb');
+module.exports = createService({ name: 'example' }, {
+  before: { create: [hooks.create()] }
+}, syncMarkets);
 
-module.exports = function(){
-  const app = this;
-
-  let options = {
-    Model: r,
-    name: 'example',
-    paginate: {
-      default: 5,
-      max: 25
-    }
-  };
-
-  app.use('/example', Service(options));
-};
+function syncMarkets(service) {
+  setInterval(() => {
+    cdnMarkets((err, data) => {
+      if(err) { throw Error(err); }
+      service.create(data);
+    });
+  }, 10000);
+}

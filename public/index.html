@@ -78,8 +78,8 @@
         .configure(feathers.hooks())
         .configure(feathers.socketio(socket));
 
-      var exampleService = app.service('exampleService');
-      exampleService.find().then(function() { 
+      var exampleService = app.service('example');
+      exampleService.find().then(function() {
         console.log( arguments );
       })
 
